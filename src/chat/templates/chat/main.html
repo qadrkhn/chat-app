@@ -1,4 +1,4 @@
-
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,11 +65,11 @@
     <main>
 
         <h1>The best chat application ever !!!</h1>
-        <img src="chat.png">
+        <img src="{% static 'images/chat.png' %}">
 
         <div>
-            <a href=""><button>New Member</button></a>
-            <a href=""><button>Old Member</button></a>
+            <a href="{% url 'register-view' %}"><button>New Member</button></a>
+            <a href="{% url 'login-view' %}"><button>Old Member</button></a>
         </div>
 
     </main>
