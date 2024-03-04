@@ -92,10 +92,8 @@
 
     <header>
         {% if current_user %}
-          <p>Username : {{ current_user.username.capitalize }}</p>
           <p>Name : {{ current_user.first_name.capitalize }} {{ current_user.last_name.capitalize }}</p>
         {% else %}
-          <p>Username : Anonymous</p>
           <p>Name : Anonymous</p>
         {% endif %}
 
@@ -107,7 +105,7 @@
         {% for user in all_users %}
           <a href="{% url 'chat-person' user.id %}"><section>
               <img src="{% static 'images/face.png' %}">
-              <p>{{ user.username.capitalize }}</p>
+              <p>{{ user.first_name.capitalize }} {{ user.last_name.capitalize }}</p>
           </section></a>
         {% endfor %}
       {% endif %}

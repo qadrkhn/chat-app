@@ -56,7 +56,7 @@ class Register(View):
         authenticated_user = None
         if not context.get('errors', None):
             try:
-                authenticated_user = authenticate(request = request, username = user.username, password = data['password'])
+                authenticated_user = authenticate(request = request, email = user.email, password = data['password'])
             except Exception as e:
                 context = {
                     'errors': [str(e)]
