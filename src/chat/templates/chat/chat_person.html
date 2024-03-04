@@ -235,9 +235,17 @@
         <a href="{% url 'home-view' %}"><button>Back</button></a>
         <div>
             <img src="{% static 'images/face.png' %}">
-            <p>person's name</p>
+            {% if user_to_contact %}
+                <p>{{ user_to_contact.username.capitalize }}</p>
+            {% else %}
+                <p>Anonymous</p>
+            {% endif %}
         </div>
-        <p class="name-of-sender">Me : the user's name</p>
+        {% if current_user %}
+            <p class="name-of-sender">{{ current_user.username.capitalize }}</p>
+        {% else %}
+            <p class="name-of-sender">Anonymous</p>
+        {% endif %}
     </header>
 
     <main id="messages-area">

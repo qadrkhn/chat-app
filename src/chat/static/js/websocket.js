@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const websocketContainer = document.getElementById('the-message-to-send');
     const messageContainer = document.getElementById('messages-area');
 
-    const websocketUrl = `ws://${window.location.host}/websocket/Qadeer/`;
+    const websocketUrl = `ws://${window.location.host}/websocket/`;
 
     const websocket = new WebSocket(websocketUrl);
 
