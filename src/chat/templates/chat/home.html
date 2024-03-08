@@ -91,16 +91,24 @@
 <body>
 
     <header>
-        <p>Username : my username</p>
-        <p>Name : my name</p>
+        {% if current_user %}
+          <p>Name : {{ current_user.first_name.capitalize }} {{ current_user.last_name.capitalize }}</p>
+        {% else %}
+          <p>Name : Anonymous</p>
+        {% endif %}
+
         <a href="{% url 'logout-view' %}"><button>Logout</button></a>
     </header>
 
     <main>
-        <a href=""><section>
-            <img src="{% static 'images/face.png' %}">
-            <p>person's name</p>
-        </section></a>
+      {% if all_users %}
+        {% for user in all_users %}
+          <a href="{% url 'chat-person' user.id %}"><section>
+              <img src="{% static 'images/face.png' %}">
+              <p>{{ user.first_name.capitalize }} {{ user.last_name.capitalize }}</p>
+          </section></a>
+        {% endfor %}
+      {% endif %}
     </main>
 
 </body>

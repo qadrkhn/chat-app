@@ -233,38 +233,55 @@
 <body>
     <header>
         <a href="{% url 'home-view' %}"><button>Back</button></a>
-        <div>
+        <div id="receiver-info">
             <img src="{% static 'images/face.png' %}">
-            <p>person's name</p>
+            {% if user_to_contact %}
+                <p>{{ user_to_contact.first_name.capitalize }} {{ user_to_contact.last_name.capitalize }}</p>
+            {% else %}
+                <p>Anonymous</p>
+            {% endif %}
         </div>
-        <p class="name-of-sender">Me : the user's name</p>
+        {% if current_user %}
+            <p class="name-of-sender">{{ current_user.first_name.capitalize }} {{ current_user.last_name.capitalize }}</p>
+        {% else %}
+            <p class="name-of-sender">Anonymous</p>
+        {% endif %}
     </header>
 
     <main id="messages-area">
-        <section class="to">
+      {% for message in messages %}
+        {% if message.sender == current_user %}
+          <section class="to">
             <div class="details">
-                <p>2024-01-30</p>
+                <p>{{ message.time_sent }}</p>
                 <div class="status"><div></div><div></div></div>
-                <p>10:55:02</p>
+                <p>{{ message.time_sent }}</p>
             </div>
             <div class="message">
-                <p style="overflow-wrap: anywhere;">Message from you</p>
+                <p style="overflow-wrap: anywhere;">{{ message.content }}</p>
             </div>
-        </section>
-
-        <section class="from">
+          </section>
+        {% elif message.sender == user_to_contact %}
+          <section class="from">
             <div class="details">
-                <p>2024-01-30</p>
-                <p>10:55:02</p>
+                <p>{{ message.time_sent }}</p>
+                <p>{{ message.time_sent }}</p>
             </div>
             <div class="message">
-                <p style="overflow-wrap: anywhere;">Message from the other</p>
+                <p style="overflow-wrap: anywhere;">{{ message.content }}</p>
             </div>
-        </section>
+          </section>
+        {% endif %}
+      {% endfor %}
+    </main>
 
     <footer>
         <textarea name="text" oninput="this.style.height = ''; this.style.height = this.scrollHeight +'px'" id="the-message-to-send"></textarea>
         <button id="send-message-button">Send</button>
     </footer>
+    <script src="{% static 'js/websocket.js' %}">
+
+    </script>
+
 </body>
 </html>

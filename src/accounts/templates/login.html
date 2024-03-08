@@ -78,14 +78,21 @@
 <body>
 
     <h1>Login</h1>
+    {% if errors %}
+        {% for error in errors %}
+            <p class="there_is_an_error">{{ error }}</p>
+        {% endfor %}
+    {% endif %}
 
     <form method="post">
-        <input type="text" name="username" placeholder="Username">
-        <input type="text" name="password" placeholder="password">
+        {% csrf_token %}
+
+        <input type="text" name="email" placeholder="Email">
+        <input type="password" name="password" placeholder="password">
         <button>Login</button>
     </form>
 
-    <p>do not have an account ? you can <a href="{% url 'register-view' %}">register</a></p>
+    <p>Do not have an account ? you can <a href="{% url 'register-view' %}">register</a></p>
 
 </body>
 </html>

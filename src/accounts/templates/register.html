@@ -101,13 +101,17 @@
     <h1>Register</h1>
 
 
-
-    <form method="post">
-        <input type="text" name="first_name" placeholder="First Name">
-        <input type="text" name="last_name" placeholder="Last Name">
-        <input type="text" name="username" placeholder="Username">
-        <input type="email" name="email" placeholder="Email">
-        <input type="password" name="password" placeholder="password">
+    {% if errors %}
+        {% for error in errors %}
+            <p class="there_is_an_error">{{ error }}</p>
+        {% endfor %}
+    {% endif %}
+    <form method="post" action="{% url 'register-view' %}">
+        {% csrf_token  %}
+        <input type="text" name="first_name" placeholder="First Name" required>
+        <input type="text" name="last_name" placeholder="Last Name" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="password" required>
 
         <button>Register</button>
     </form>
