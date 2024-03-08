@@ -233,7 +233,7 @@
 <body>
     <header>
         <a href="{% url 'home-view' %}"><button>Back</button></a>
-        <div>
+        <div id="receiver-info">
             <img src="{% static 'images/face.png' %}">
             {% if user_to_contact %}
                 <p>{{ user_to_contact.first_name.capitalize }} {{ user_to_contact.last_name.capitalize }}</p>

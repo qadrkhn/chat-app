@@ -24,6 +24,8 @@ class Home(View):
 
 class ChatPerson(View):
     def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('main-view')
         context = {}
         context['current_user'] = request.user
         user_id = kwargs.get('id')

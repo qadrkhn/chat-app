@@ -18,8 +18,18 @@ document.addEventListener('DOMContentLoaded', () => {
         // Send WebSocket message when the button is clicked
         const message = websocketContainer.value;
         if (message === '') { return; }
+
+        // below lines get the user id that is receiving the message from the url
+        let receiverId = null;
+        const path = window.location.pathname;
+        const lastSlashIndex = path.lastIndexOf('/');
+        if (lastSlashIndex !== -1) {
+            receiverId = path.charAt(lastSlashIndex - 1);
+        }
+
         const messageToJSON = `{
             "type" : "new_message",
+            "receiver" : "${receiverId}",
             "message" : "${message}"
         }`
         websocket.send(messageToJSON);
