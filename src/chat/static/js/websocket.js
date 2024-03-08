@@ -50,5 +50,22 @@ document.addEventListener('DOMContentLoaded', () => {
         websocketContainer.value = '';
 
     });
+    websocket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        if (data.type_of_message === 'new_message') {
+            messageContainer.insertAdjacentHTML('beforeend',
+                `<section class="from">
+                    <div class="details">
+                        <p>2024-01-30</p>
+                        <p>10:55:02</p>
+                    </div>
+                    <div class="message">
+                        <p style="overflow-wrap: anywhere;">${data.message}</p>
+                    </div>
+                </section>`
+            );
+        }
+    };
 
 });

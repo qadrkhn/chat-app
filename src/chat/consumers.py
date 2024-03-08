@@ -1,5 +1,5 @@
 
-from chat.models import Message
+from chat.models import Message, UserChannel
 from accounts.models import Account
 
 from channels.generic.websocket import WebsocketConsumer
@@ -17,7 +17,18 @@ We can read session in consumer but cannnot store values in session in consumer.
 class ChatConsumer(WebsocketConsumer):
     # This method is called when the websocket is handshaking as part of the connection process
     def connect(self):
+        # Accept the connection
         self.accept()
+
+        # Save the channel name in the database
+        try:
+            user = self.scope['user']
+            channel_name = self.channel_name
+            user_channel = UserChannel.objects.create(user=user, channel_name=channel_name)
+            # user_channel.save()
+
+        except Exception as e:
+            print(e)
 
     # This method is called when the websocket is receiving a message from the client
     def receive(self, text_data=None, bytes_data=None):
@@ -44,6 +55,20 @@ class ChatConsumer(WebsocketConsumer):
             message = Message.objects.create(sender=sender, receiver=receiver, content=content)
             message.save()
 
+        try:
+            data = {
+                'type' : 'receive_function',
+                'type_of_message' : 'new_message',
+                'message' : content,
+            }
+            channel_name = UserChannel.objects.get(user=receiver).channel_name
+            # Send the message to the layer
+            async_to_sync(self.channel_layer.send)(
+                channel_name, data
+            )
+        except Exception as e:
+            print(e)
+
         return super().receive(text_data, bytes_data)
 
     # This method is called when the websocket is disconnected
@@ -54,5 +79,9 @@ class ChatConsumer(WebsocketConsumer):
 
     # Consumer must have a receiver method to receive data from the layer
     # This method will be called when the consumer receives a message from the layer
-    def my_receiver(self, the_data_that_will_come_from_the_layer):
+    # Name of this function matters. This is specified in the 'type' key of the data dictionary that is sent to the layer
+    # This method is called when the consumer receives a message from the layer
+    def receive_function(self, the_data_that_will_come_from_the_layer):
         print(the_data_that_will_come_from_the_layer)
+        data = json.dumps(the_data_that_will_come_from_the_layer)
+        self.send(text_data=data)
