@@ -1,0 +1,19 @@
+version: '3.8'
+
+# build let's docker-compose know where to find the Dockerfile for the backend service. The context is the current directory, and the Dockerfile is the default name for the Dockerfile.
+
+services:
+  backend:
+    container_name: backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - 8001:8000
+    volumes:
+      - ./src:/app
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=asdpmsapdmspdaskdaposdkas
+      - ALLOWED_HOSTS=["*"]
