@@ -11,6 +11,8 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # copy the current directory contents into the container at /app
 COPY ./src /app
 
+# copy the docker directory into the container at /app/docker because need the code inside workers/*/tasks.py
+COPY ./docker /app/docker
 
 # copy the entrypoint.sh file to root because for some reason it refuses to be copied to /app
 COPY ./entrypoint.sh /

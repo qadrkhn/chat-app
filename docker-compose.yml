@@ -1,6 +1,6 @@
 version: '3.8'
 
-# build let's docker-compose know where to find the Dockerfile for the backend service. The context is the current directory, and the Dockerfile is the default name for the Dockerfile.
+# build let's docker-compose know where to find the Dockerfile for the backend service. The context is the current directory (that will be . in the Dockerfile), and the Dockerfile is the default name for the Dockerfile.
 
 # celery command is the command to start the celery worker. The -A chat_app argument tells celery to use the chat_app module to find the tasks. The --loglevel=info argument sets the log level to info.
 
@@ -21,6 +21,7 @@ services:
       - 8001:8000
     volumes:
       - ./src:/app
+      - ./docker:/app/docker
     environment:
       - DEBUG=1
       - SECRET_KEY=asdpmsapdmspdaskdaposdkas
@@ -36,12 +37,37 @@ services:
     depends_on:
       - redis
       - backend
-    command: celery -A chat_app worker --loglevel=info
+    command: celery -A chat_app worker --loglevel=info -Q general_worker_queue
     volumes:
       - ./src:/app
+      - ./docker:/app/docker
     environment:
       - DEBUG=1
       - SECRET_KEY=asdpmsapdmspdaskdaposdkas
       - ALLOWED_HOSTS=["*"]
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
+
+  worker1:
+    container_name: otp_worker
+    build:
+      context: ./docker/workers/otp_worker
+      dockerfile: Dockerfile
+    depends_on:
+      - redis
+      - backend
+    command: celery -A celery_app worker --loglevel=info -Q otp_worker_queue
+    volumes:
+      - ./docker/workers/otp_worker:/app
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - CELERY_ACCEPT_CONTENT=application/json
+      - CELERY_TASK_SERIALIZER=json
+      - CELERY_RESULT_SERIALIZER=json
+      - EMAIL_BACKEND=
+      - EMAIL_HOST=
+      - EMAIL_HOST_USER=
+      - EMAIL_HOST_PASSWORD=
+      - EMAIL_PORT=
+      - DEFAULT_FROM_EMAIL=

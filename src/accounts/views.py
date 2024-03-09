@@ -1,9 +1,12 @@
 
 from accounts.tasks import send_confirmation_email
+from docker.workers.otp_worker.otp_tasks import send_email_otp, send_mobile_otp
 
 from django.views import View
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib.auth import get_user_model, authenticate, login, logout
+
+from celery import group
 
 class Login(View):
     def get(self, request):
@@ -25,6 +28,8 @@ class Login(View):
 
         if user is not None:
             login(request, user)
+            otp_task_group = group(send_email_otp.s(), send_mobile_otp.s())
+            otp_task_group.apply_async()
             return redirect('home-view')
         else:
             context = {

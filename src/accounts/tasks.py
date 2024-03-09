@@ -10,7 +10,7 @@ from celery import shared_task
 def send_welcome_email():
     return
 
-@shared_task(bind=True)
+@shared_task(bind=True, queue='general_worker_queue')
 def send_confirmation_email(self, target_mail, message):
     mail_subject = "Welcome on Board!"
     send_mail(
