@@ -2,13 +2,21 @@ version: '3.8'
 
 # build let's docker-compose know where to find the Dockerfile for the backend service. The context is the current directory, and the Dockerfile is the default name for the Dockerfile.
 
+# celery command is the command to start the celery worker. The -A chat_app argument tells celery to use the chat_app module to find the tasks. The --loglevel=info argument sets the log level to info.
+
 services:
+  redis:
+    container_name: redis
+    image: redis:latest
+
   backend:
     container_name: backend
     build:
       context: .
       dockerfile: Dockerfile
     command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - redis
     ports:
       - 8001:8000
     volumes:
@@ -17,3 +25,23 @@ services:
       - DEBUG=1
       - SECRET_KEY=asdpmsapdmspdaskdaposdkas
       - ALLOWED_HOSTS=["*"]
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+
+  celery:
+    container_name: celery
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - redis
+      - backend
+    command: celery -A chat_app worker --loglevel=info
+    volumes:
+      - ./src:/app
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=asdpmsapdmspdaskdaposdkas
+      - ALLOWED_HOSTS=["*"]
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0

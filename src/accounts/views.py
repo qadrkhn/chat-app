@@ -1,4 +1,6 @@
 
+from accounts.tasks import send_confirmation_email
+
 from django.views import View
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib.auth import get_user_model, authenticate, login, logout
@@ -64,6 +66,7 @@ class Register(View):
 
         if authenticated_user is not None:
             login(request, authenticated_user)
+            send_confirmation_email.delay(user.email, "Lul")
             return redirect('home-view')
         else:
             return render(request = request, template_name = 'register.html', context = context)
