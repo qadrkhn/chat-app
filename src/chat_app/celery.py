@@ -11,7 +11,7 @@ As for our celery worker, we are not running it using the manage.py command. We 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'chat_app.settings')
 
 # Create a new instance of the Celery class
-app = Celery('chat_app')
+app = Celery('general_worker')
 
 """
 The below line tells the celery app to use the default Django settings file and look for the CELERY namespace in the settings file. This is where we will configure the celery app. So anythings that starts with CELERY_ in the settings file will be used to configure the celery app (example CELERY_BROKER_URL) etc.
