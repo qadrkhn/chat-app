@@ -1,6 +1,6 @@
 
 from accounts.tasks import send_confirmation_email
-from docker.workers.otp_worker.otp_tasks import send_email_otp, send_mobile_otp
+from docker.workers.otp_worker.tasks import send_email_otp, send_mobile_otp
 
 from django.views import View
 from django.shortcuts import render, HttpResponse, redirect
