@@ -5,6 +5,14 @@ version: '3.8'
 # celery command is the command to start the celery worker. The -A chat_app argument tells celery to use the chat_app module to find the tasks. The --loglevel=info argument sets the log level to info.
 
 services:
+  flower:
+    container_name: flower
+    image: mher/flower
+    ports:
+      - 5555:5555
+    environment:
+      - CELERY_BROKER_URL=pyamqp://guest:guest@rabbitmq:5672/
+
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:management
